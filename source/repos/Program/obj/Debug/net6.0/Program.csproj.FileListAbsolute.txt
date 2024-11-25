@@ -30,3 +30,5 @@ C:\Users\Administrator\Desktop\TETRIS\source\repos\Program\obj\Debug\net6.0\Prog
 C:\Users\Administrator\Desktop\TETRIS\source\repos\Program\obj\Debug\net6.0\ref\Program.dll
 C:\Users\Administrator\Desktop\TETRIS\source\repos\Program\obj\Debug\net6.0\Program.Properties.Resources.resources
 C:\Users\Administrator\Desktop\TETRIS\source\repos\Program\obj\Debug\net6.0\Program.csproj.GenerateResource.cache
+C:\Users\yangj\OneDrive\바탕 화면\TETRIS\source\repos\Program\obj\Debug\net6.0\Program.Properties.Resources.resources
+C:\Users\yangj\OneDrive\바탕 화면\TETRIS\source\repos\Program\obj\Debug\net6.0\Program.csproj.GenerateResource.cache
