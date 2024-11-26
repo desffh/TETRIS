@@ -3,6 +3,20 @@
 
 namespace Program
 {
+    // #define
+    static class Constants
+    {
+        // 스크린 사이즈
+        public const int ScreenWidth = 50;
+        public const int ScreenHeight = 39;
+
+        // 게임화면 사이즈
+        public const int GameWidth = 12; // 실제 영역은 테두리 제외하고 10칸 (20)
+        public const int GameHeight = 20;
+
+    }
+
+
     internal class Program
     {
         // 전체창 테두리
@@ -10,12 +24,12 @@ namespace Program
         {
             int i = 0;
 
-            for (i = 0; i < 50; i++)
+            for (i = 0; i < Constants.ScreenWidth; i++)
             {
                 Console.Write("□");
             }
 
-            for(i = 0; i < 39;  i++)
+            for(i = 0; i < Constants.ScreenHeight;  i++)
             {
                 Console.SetCursorPosition(0, i + 1);
                 Console.Write("□");
@@ -24,7 +38,7 @@ namespace Program
             }
 
             Console.SetCursorPosition(0, 39);
-            for (i = 0; i < 50; i++)
+            for (i = 0; i < Constants.ScreenWidth; i++)
             {
                 Console.Write("□");
             }
@@ -38,11 +52,11 @@ namespace Program
             int i = 0;
             Console.SetCursorPosition(8, 8);
 
-            for(i = 0; i < 12; i++)
+            for(i = 0; i < Constants.GameWidth; i++)
             {
                 Console.Write("□");
             }
-            for(i = 0; i < 20; i++)
+            for(i = 0; i < Constants.GameHeight; i++)
             {
                 Console.SetCursorPosition(8, i + 9);
                 Console.Write("□");
@@ -51,14 +65,9 @@ namespace Program
             }
 
             Console.SetCursorPosition(8, 28);
-            for (i = 0; i < 12; i++)
+            for (i = 0; i < Constants.GameWidth; i++)
             {
                 Console.Write("□");
-            }
-
-            for(i = 0; i < 12; i++)
-            {
-                Console.WriteLine();
             }          
         }
 
@@ -286,8 +295,8 @@ namespace Program
 
             };
 
-        // 랜덤으로 블럭 출력
-        static void RandomBlocks()
+        // 랜덤으로 블럭 생성 & 저장
+        static int[,] RandomBlock()
         {
             // 난수 생성
             // rand.Next(min이상, max미만)
@@ -296,74 +305,98 @@ namespace Program
             int blockNum = rand.Next(0, 7);
             int blockRotation = rand.Next(0, 4);
 
-            for (int y = 0; y < 4; y++)
-            {
-                for (int x = 0; x < 4; x++)
-                {
-                    Console.SetCursorPosition(x * 2, y);
-
-                    if (blocks[blockNum, blockRotation, y, x] == 1)
-                    {
-                        Console.Write("■");
-                    }
-
-                }
-            }
-
-        }
-        // 랜덤으로 가져온 블럭 저장
-        int[,] SaveBlock = new int[4, 4];
-
-        public void Save()
-        {
-
-            Random rand = new Random();
-            int blockNum = rand.Next(0, 7);
-            int blockRotation = rand.Next(0, 4);
-
-            int i = 0;
-            int j = 0;
+            // 랜덤으로 가져온 블럭 저장
+            int[,] SelectBlock = new int[4, 4];
 
             for (int y = 0; y < 4; y++)
             {
                 for (int x = 0; x < 4; x++)
                 {
-                    SaveBlock[i, j] = blocks[blockNum, blockRotation, y, x];
+                    SelectBlock[y, x] = blocks[blockNum, blockRotation, y, x];
                 }
             }
+            return SelectBlock;
         }
-
-
 
         // 보드에 블럭 생성
-        static void CreateBlocks(int[,] SaveBlock)
+        static void CreateBlock(int[,] block, int posX, int posY)
         {
-            // 블럭이 생성 될 위치
-            int x = 14;
-            int y = 10;
-            
-            int i = 0;
-            int j = 0;
-
-            for(i = 0; i < 4; i++)
+            // Console.SetCursorPosition(14, 10); 
+            for(int y = 0; y < 4; y++)
             {
-                Console.SetCursorPosition(x, y + 1);
-                
-                for(j = 0; j < 4; j++)
+                for(int x = 0;x < 4; x++)
                 {
-                    if (SaveBlock[i, j] == 1)
+                    if (block[y, x] == 1)
                     {
-                        Console.Write("  ");
-                    }
-                    else if (SaveBlock[i, j] == 0)
-                    {
-                        Console.SetCursorPosition(x+2 * (j+1), y+i);
+                        Console.SetCursorPosition(posX + x * 2, posY + y);
+                        Console.Write("■");
                     }
                 }
             }
         }
 
+        // 이전 블럭 잔상 지우기
+        static void ReMoveBlock(int[,] block, int posX, int posY)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (block[y, x] == 1)
+                    {
+                        Console.SetCursorPosition(posX + x * 2, posY + y);
+                        Console.Write("  ");
+                    }
+                }
+            }
+        }
 
+        // 블럭 다시 그리기
+        static void ReCreateBlock(int[,] block, int posX, int posY)
+        {
+            // Console.SetCursorPosition(14, 10); 
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (block[y, x] == 1)
+                    {
+                        Console.SetCursorPosition(posX + x * 2, posY + y);
+                        Console.Write("■");
+                    }
+                }
+            }
+        }
+
+        // 블럭 초기 생성 위치
+        static int PosX = 14;
+        static int PosY = 9;
+
+        // 키 입력받는 함수
+        static bool KeyInput()
+        {
+            if(Console.KeyAvailable) 
+            {
+                ConsoleKeyInfo key;
+                key = Console.ReadKey(true);
+            
+                switch(key.Key) 
+                {
+                    case ConsoleKey.LeftArrow: PosX -= 2;
+                        break;
+                    case ConsoleKey.RightArrow: PosX += 2;
+                        break;
+                    case ConsoleKey.UpArrow:
+                        break;
+                    case ConsoleKey.DownArrow: PosY += 1;
+                        break;
+                }
+                return true;
+            }
+            return false;
+
+
+        }
 
 
         [SupportedOSPlatform("windows")]
@@ -376,12 +409,31 @@ namespace Program
 
             Console.SetWindowSize(100, 50);   // 창 크기
 
-
             ScreenLine();
             GameLine();
-            RandomBlocks();
-            
-       
+
+            // 반환된 selectBlock 저장
+            int[,] currentBlock = RandomBlock();
+
+            CreateBlock(currentBlock, PosX, PosY);
+
+            while (true)
+            {
+                bool isKeyPressed = KeyInput();
+
+                if(isKeyPressed == true)
+                {
+                    ReMoveBlock(currentBlock, PosX, PosY); 
+
+                    ReCreateBlock(currentBlock, PosX, PosY);
+                }
+                System.Threading.Thread.Sleep(100); // 게임 속도 조절
+            }
+
+           // for (int i = 0; i < 30; i++)
+           // {
+           //     Console.WriteLine();
+           // }
         }
     }
 }
