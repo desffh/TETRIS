@@ -7,8 +7,8 @@ namespace Program
     static class Constants
     {
         // 스크린 사이즈
-        public const int ScreenWidth = 50;
-        public const int ScreenHeight = 39;
+        public const int ScreenWidth = 30;
+        public const int ScreenHeight = 26;
 
         // 게임화면 사이즈
         public const int GameWidth = 12; // 실제 영역은 테두리 제외하고 10칸 (20)
@@ -31,13 +31,13 @@ namespace Program
 
             for(i = 0; i < Constants.ScreenHeight;  i++)
             {
-                Console.SetCursorPosition(0, i + 1);
+                Console.SetCursorPosition(0, i);
                 Console.Write("□");
-                Console.SetCursorPosition(98, i);
+                Console.SetCursorPosition(58, i);
                 Console.Write("□");
             }
 
-            Console.SetCursorPosition(0, 39);
+            Console.SetCursorPosition(0, 25);
             for (i = 0; i < Constants.ScreenWidth; i++)
             {
                 Console.Write("□");
@@ -50,7 +50,7 @@ namespace Program
         static void GameLine()
         {
             int i = 0;
-            Console.SetCursorPosition(8, 8);
+            Console.SetCursorPosition(3, 3);
 
             for(i = 0; i < Constants.GameWidth; i++)
             {
@@ -58,13 +58,13 @@ namespace Program
             }
             for(i = 0; i < Constants.GameHeight; i++)
             {
-                Console.SetCursorPosition(8, i + 9);
+                Console.SetCursorPosition(3, i + 3);
                 Console.Write("□");
-                Console.SetCursorPosition(30, i + 9);
+                Console.SetCursorPosition(27, i + 3);
                 Console.Write("□");
             }
 
-            Console.SetCursorPosition(8, 28);
+            Console.SetCursorPosition(3, 22);
             for (i = 0; i < Constants.GameWidth; i++)
             {
                 Console.Write("□");
@@ -302,8 +302,8 @@ namespace Program
             // rand.Next(min이상, max미만)
             
             Random rand = new Random();
-            int blockNum = rand.Next(0, 7);
-            int blockRotation = rand.Next(0, 4);
+            int blockNum = rand.Next(0, 7); // 블럭 종류
+            int blockRotation = rand.Next(0, 4); // 블럭 회전 종류
 
             // 랜덤으로 가져온 블럭 저장
             int[,] SelectBlock = new int[4, 4];
@@ -318,13 +318,12 @@ namespace Program
             return SelectBlock;
         }
 
-        // 보드에 블럭 생성
+        // 보드에 블럭 생성(처음 & 다시 그리기)
         static void CreateBlock(int[,] block, int posX, int posY)
         {
-            // Console.SetCursorPosition(14, 10); 
             for(int y = 0; y < 4; y++)
             {
-                for(int x = 0;x < 4; x++)
+                for(int x = 0; x < 4; x++)
                 {
                     if (block[y, x] == 1)
                     {
@@ -335,8 +334,8 @@ namespace Program
             }
         }
 
-        // 이전 블럭 잔상 지우기
-        static void ReMoveBlock(int[,] block, int posX, int posY)
+        // 이전 블럭(오른쪽) 잔상 지우기
+        static void ReMoveRightBlock(int[,] block, int posX, int posY)
         {
             for (int y = 0; y < 4; y++)
             {
@@ -344,70 +343,99 @@ namespace Program
                 {
                     if (block[y, x] == 1)
                     {
-                        Console.SetCursorPosition(posX + x * 2, posY + y);
-                        Console.Write("  ");
+                        Console.SetCursorPosition(posX + (x - 1) * 2, posY + y);
+                        Console.Write("    ");
+                        break;
                     }
                 }
             }
         }
 
-        // 블럭 다시 그리기
-        static void ReCreateBlock(int[,] block, int posX, int posY)
+        // 이전 블럭(왼쪽) 잔상 지우기
+        static void ReMoveLeftBlock(int[,] block, int posX, int posY)
         {
-            // Console.SetCursorPosition(14, 10); 
             for (int y = 0; y < 4; y++)
             {
                 for (int x = 0; x < 4; x++)
                 {
                     if (block[y, x] == 1)
                     {
-                        Console.SetCursorPosition(posX + x * 2, posY + y);
-                        Console.Write("■");
+                        Console.SetCursorPosition(posX + (x + 1) * 2, posY + y);
+                        Console.Write("    ");
+                        break;
                     }
                 }
             }
         }
 
-        // 블럭 초기 생성 위치
-        static int PosX = 14;
-        static int PosY = 9;
+        // 이전 블럭(윗쪽) 잔상 지우기
+        static void ReMoveUpBlock(int[,] block, int posX, int posY)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (block[y, x] == 1)
+                    {
+                        Console.SetCursorPosition(posX + x * 2, posY + (y - 1));
+                        Console.Write("    ");
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 벽에 닿는지 검사 (위치값을 토대로)
+        static bool CheckWall(int[,] block, int width, int Height)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (block[x, y] == 1)
+                    {
+
+                    }
+                }
+            }
+        }
 
         // 키 입력받는 함수
-        static bool KeyInput()
+        static string KeyInput()
         {
             if(Console.KeyAvailable) 
             {
                 ConsoleKeyInfo key;
-                key = Console.ReadKey(true);
-            
+                key = Console.ReadKey(true); 
+
                 switch(key.Key) 
                 {
                     case ConsoleKey.LeftArrow: PosX -= 2;
-                        break;
+                        return "Left";
                     case ConsoleKey.RightArrow: PosX += 2;
-                        break;
+                        return "Right";           
                     case ConsoleKey.UpArrow:
-                        break;
+                        return "Up";
                     case ConsoleKey.DownArrow: PosY += 1;
-                        break;
+                        return "Down";         
                 }
-                return true;
             }
-            return false;
-
+            return "None";
 
         }
 
+        // 블럭 초기 생성 위치
+        static int PosX = 9;
+        static int PosY = 5;
 
         [SupportedOSPlatform("windows")]
         static void Main(string[] args)
         {
             Console.Clear();
             Console.Title = "TETRIS";
-            Console.SetBufferSize(160, 50); // 창 내의 버퍼
-                                            // (내부 컨텐츠의 크기로 문자를 나타낼 셀의 수)
-
-            Console.SetWindowSize(100, 50);   // 창 크기
+            Console.SetBufferSize(160, 100); // 창 내의 버퍼
+                                             // (내부 컨텐츠의 크기로 문자를 나타낼 셀의 수)
+            Console.SetWindowSize(60, 26);   // 창 크기
 
             ScreenLine();
             GameLine();
@@ -417,23 +445,28 @@ namespace Program
 
             CreateBlock(currentBlock, PosX, PosY);
 
+
             while (true)
             {
-                bool isKeyPressed = KeyInput();
-
-                if(isKeyPressed == true)
+                string keyAction = KeyInput(); // 키 입력을 문자열로 받음
+                
+                if(keyAction == "Left")
                 {
-                    ReMoveBlock(currentBlock, PosX, PosY); 
-
-                    ReCreateBlock(currentBlock, PosX, PosY);
+                    ReMoveLeftBlock(currentBlock,PosX,PosY);
+                    CreateBlock(currentBlock,PosX,PosY);
+                }
+                if (keyAction == "Right")
+                {
+                    ReMoveRightBlock(currentBlock, PosX, PosY);
+                    CreateBlock(currentBlock, PosX, PosY);
+                }
+                if (keyAction == "Down")
+                {
+                    ReMoveUpBlock(currentBlock, PosX, PosY);
+                    CreateBlock(currentBlock, PosX, PosY);
                 }
                 System.Threading.Thread.Sleep(100); // 게임 속도 조절
             }
-
-           // for (int i = 0; i < 30; i++)
-           // {
-           //     Console.WriteLine();
-           // }
         }
     }
 }
