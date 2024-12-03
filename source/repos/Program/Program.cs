@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Versioning;
 
-
 namespace Program
 {
     // #define
@@ -11,8 +10,8 @@ namespace Program
         public const int ScreenHeight = 26;
 
         // 게임화면 사이즈
-        public const int GameWidth = 12; // 실제 영역은 테두리 제외하고 10칸 (20)
         public const int GameHeight = 20;
+        public const int GameWidth = 12; // 실제 영역은 테두리 제외하고 10칸 (20)
 
     }
 
@@ -71,6 +70,60 @@ namespace Program
             }          
         }
 
+        // 게임 내 배열
+        static int[,] Grid = new int[Constants.GameHeight, Constants.GameWidth];
+
+        // 그리드 내 초기화
+        static void GameGrid()
+        {
+            // 게임 영역 그리드 초기화
+            for (int y = 0; y < Constants.GameHeight; y++) // 세로 길이만큼 반복
+            {
+                for (int x = 0; x < Constants.GameWidth; x++) // 가로 길이만큼 반복
+                {
+                    // 그리드의 경계 설정
+                    if (x == 0 || x == Constants.GameWidth - 1 || y == 0 || y == Constants.GameHeight - 1)
+                    {
+                        Grid[x, y] = 1; // 경계는 1로 설정
+                    }
+                    else
+                    {
+                        Grid[x, y] = 0; // 내부는 0으로 설정
+                    }
+                }
+            }
+        }
+
+
+        static bool Collision(int[,] block, int posX, int posY)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    if (block[y, x] != 0) // 블록이 존재하는 칸만 검사
+                    {
+                        // posX, posY가 그리드 밖으로 나가지 않도록 검사
+                        if (posY + y >= Constants.GameHeight 
+                            || posX + x >= Constants.GameWidth 
+                            || posX + x < 0 || posY + y < 0)
+                        {
+                           
+                            return true; // 경계를 벗어나면 충돌
+                        }
+
+                        // 그리드에서 다른 블록이 있을 경우 충돌
+                        if (Grid[posY + y, posX + x] != 0)
+                        {
+                            
+                            return true; // 다른 블록과 충돌
+                        }
+                    }
+                }
+            }
+            return false; // 충돌이 없으면 false 반환
+        }
+
 
         // 4차원 배열 : 블럭 요소
         static int[,,,] blocks = new int[7, 4, 4, 4]
@@ -79,8 +132,8 @@ namespace Program
                 {
                     {
                         {0, 0, 0, 0},
-                        {0, 0, 0, 0},
                         {1, 1, 1, 1},
+                        {0, 0, 0, 0},
                         {0, 0, 0, 0}
                     },
 
@@ -93,8 +146,8 @@ namespace Program
 
                     {
                         {0, 0, 0, 0},
-                        {0, 0, 0, 0},
                         {1, 1, 1, 1},
+                        {0, 0, 0, 0},
                         {0, 0, 0, 0}
                     },
 
@@ -117,8 +170,8 @@ namespace Program
 
                     {
                         {0, 0, 0, 0},
-                        {0, 1, 1, 1},
-                        {0, 1, 0, 0},
+                        {1, 1, 1, 0},
+                        {1, 0, 0, 0},
                         {0, 0, 0, 0}
                     },
 
@@ -130,8 +183,8 @@ namespace Program
                     },
 
                     {
-                        {0, 0, 0, 1},
-                        {0, 1, 1, 1},
+                        {0, 0, 1, 0},
+                        {1, 1, 1, 0},
                         {0, 0, 0, 0},
                         {0, 0, 0, 0}
                     }
@@ -147,8 +200,8 @@ namespace Program
                     },
 
                     {
-                        {0, 1, 0, 0},
-                        {0, 1, 1, 1},
+                        {1, 0, 0, 0},
+                        {1, 1, 1, 0},
                         {0, 0, 0, 0},
                         {0, 0, 0, 0}
                     },
@@ -171,8 +224,8 @@ namespace Program
                 // ㅗ 블럭
                 {
                     {
-                        {0, 0, 1, 0},
-                        {0, 1, 1, 1},
+                        {0, 1, 0, 0},
+                        {1, 1, 1, 0},
                         {0, 0, 0, 0},
                         {0, 0, 0, 0}
                     },
@@ -295,6 +348,9 @@ namespace Program
 
             };
 
+        // 랜덤으로 가져온 블럭 저장
+        static int[,] SelectBlock = new int[4, 4];
+
         // 랜덤으로 블럭 생성 & 저장
         static int[,] RandomBlock()
         {
@@ -305,8 +361,6 @@ namespace Program
             int blockNum = rand.Next(0, 7); // 블럭 종류
             int blockRotation = rand.Next(0, 4); // 블럭 회전 종류
 
-            // 랜덤으로 가져온 블럭 저장
-            int[,] SelectBlock = new int[4, 4];
 
             for (int y = 0; y < 4; y++)
             {
@@ -318,17 +372,24 @@ namespace Program
             return SelectBlock;
         }
 
+        // 블럭 초기 생성 위치
+        static int PosX = 9;
+        static int PosY = 5;
         // 보드에 블럭 생성(처음 & 다시 그리기)
-        static void CreateBlock(int[,] block, int posX, int posY)
+        static void CreateBlock(int[,] block)
         {
             for(int y = 0; y < 4; y++)
             {
+                Console.SetCursorPosition(PosX, PosY + 1);
                 for(int x = 0; x < 4; x++)
                 {
                     if (block[y, x] == 1)
                     {
-                        Console.SetCursorPosition(posX + x * 2, posY + y);
                         Console.Write("■");
+                    }
+                    else if (block[y, x] == 0)
+                    {
+                        Console.SetCursorPosition(PosX + 2 * (x + 1), PosY + y);
                     }
                 }
             }
@@ -369,39 +430,31 @@ namespace Program
         }
 
         // 이전 블럭(윗쪽) 잔상 지우기
-        static void ReMoveUpBlock(int[,] block, int posX, int posY)
+        static void ReMoveUpBlock(int[,] block)
         {
             for (int y = 0; y < 4; y++)
             {
+                Console.SetCursorPosition(PosX + 1, PosY + 1);
+
                 for (int x = 0; x < 4; x++)
                 {
                     if (block[y, x] == 1)
                     {
-                        Console.SetCursorPosition(posX + x * 2, posY + (y - 1));
-                        Console.Write("    ");
-                        break;
+                        Console.Write("  ");
                     }
-                }
-            }
-        }
-
-        // 벽에 닿는지 검사 (위치값을 토대로)
-        static bool CheckWall(int[,] block, int width, int Height)
-        {
-            for (int y = 0; y < 4; y++)
-            {
-                for (int x = 0; x < 4; x++)
-                {
-                    if (block[x, y] == 1)
+                    else if (block[y, x] == 0)
                     {
-
+                        Console.SetCursorPosition(PosX + 2 * (x + 1), PosY + y);
                     }
                 }
             }
         }
+
+        
+
 
         // 키 입력받는 함수
-        static string KeyInput()
+        static bool KeyInput()
         {
             if(Console.KeyAvailable) 
             {
@@ -411,22 +464,21 @@ namespace Program
                 switch(key.Key) 
                 {
                     case ConsoleKey.LeftArrow: PosX -= 2;
-                        return "Left";
+                        break;
                     case ConsoleKey.RightArrow: PosX += 2;
-                        return "Right";           
-                    case ConsoleKey.UpArrow:
-                        return "Up";
-                    case ConsoleKey.DownArrow: PosY += 1;
-                        return "Down";         
-                }
-            }
-            return "None";
+                        break;
 
+                    case ConsoleKey.UpArrow:
+                        break;
+
+                    case ConsoleKey.DownArrow: PosY += 1;
+                        break;
+                }
+                return true;
+            }
+            return false;
         }
 
-        // 블럭 초기 생성 위치
-        static int PosX = 9;
-        static int PosY = 5;
 
         [SupportedOSPlatform("windows")]
         static void Main(string[] args)
@@ -443,30 +495,25 @@ namespace Program
             // 반환된 selectBlock 저장
             int[,] currentBlock = RandomBlock();
 
-            CreateBlock(currentBlock, PosX, PosY);
+            CreateBlock(currentBlock);
 
+            GameGrid();
+
+            
 
             while (true)
             {
-                string keyAction = KeyInput(); // 키 입력을 문자열로 받음
-                
-                if(keyAction == "Left")
+                CreateBlock(currentBlock);
+
+                if(KeyInput()) 
                 {
-                    ReMoveLeftBlock(currentBlock,PosX,PosY);
-                    CreateBlock(currentBlock,PosX,PosY);
-                }
-                if (keyAction == "Right")
-                {
-                    ReMoveRightBlock(currentBlock, PosX, PosY);
-                    CreateBlock(currentBlock, PosX, PosY);
-                }
-                if (keyAction == "Down")
-                {
-                    ReMoveUpBlock(currentBlock, PosX, PosY);
-                    CreateBlock(currentBlock, PosX, PosY);
+                    ReMoveUpBlock(currentBlock);    
                 }
                 System.Threading.Thread.Sleep(100); // 게임 속도 조절
+                
             }
+
+            
         }
     }
 }
