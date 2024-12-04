@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Runtime.ExceptionServices;
 using System.Runtime.Versioning;
 using System.Xml.Serialization;
 
@@ -10,226 +11,7 @@ namespace Program
     
     internal class Program
     {
-        static int[,,,] blocks = new int[7, 4, 4, 4]
-                {
-                    // ㅡ ㅣ 블럭
-                    {
-                        {
-                            {0, 0, 0, 0},
-                            {1, 1, 1, 1},
-                            {0, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {1, 1, 1, 1},
-                            {0, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0}
-                        }
-                    },
-
-                    // ㄴ 블럭
-                    {
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {1, 1, 1, 0},
-                            {1, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 1, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {1, 1, 1, 0},
-                            {0, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        }
-                    },
-
-                    // 거꾸로 ㄴ 블럭
-                    {
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {1, 0, 0, 0},
-                            {1, 1, 1, 0},
-                            {0, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 1},
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 1},
-                            {0, 0, 0, 1},
-                            {0, 0, 0, 0}
-                        }
-                    },
-
-                    // ㅗ 블럭
-                    {
-                        {
-                            {0, 1, 0, 0},
-                            {1, 1, 1, 0},
-                            {0, 0, 0, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 1},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        }
-                    },
-
-                    // ㄹ 블럭
-                    {
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 1},
-                            {0, 0, 1, 1},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 1},
-                            {0, 0, 1, 1},
-                            {0, 0, 1, 0},
-                            {0, 0, 0, 0}
-                        }
-                    },
-
-                    // 거꾸로 ㄹ 블럭
-                    {
-                        {
-                            {0, 0, 0, 0},
-                            {0, 0, 1, 1},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 0, 1},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 0, 1, 1},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 1, 0},
-                            {0, 0, 1, 1},
-                            {0, 0, 0, 1},
-                            {0, 0, 0, 0}
-                        }
-                    },
-
-                    // ㅁ 블럭
-                    {
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        },
-
-                        {
-                            {0, 0, 0, 0},
-                            {0, 1, 1, 0},
-                            {0, 1, 1, 0},
-                            {0, 0, 0, 0}
-                        }
-
-                    }
-                };
+        
 
         static int[,] main_org = new int[Constants.gameHeight, Constants.gameWidth * 2];
         static int[,] main_cpy = new int[Constants.gameHeight, Constants.gameWidth * 2];
@@ -243,12 +25,14 @@ namespace Program
 
         static bool check_crush(int bx, int by, int rotation)
         {
+            
             // 충돌 여부 계산 (예: 벽이나 블록과 겹치는지 확인)
             for (int i = 0; i < 4; i++)
             {
+                
                 for (int j = 0; j < 4; j++)
                 {
-                    if (blocks[b_type, rotation, i, j] == 1 && main_org[by + i, bx + j * 2] > 0)
+                    if (Block.blocks[b_type, rotation, i, j] == 1 && main_org[by + i, bx + j * 2] >= 0)
                     {
                         int newX = bx + j * 2;
                         int newY = by + i;
@@ -257,15 +41,37 @@ namespace Program
                         {
                             return true; // 충돌 발생 (새로운 위치가 빈곳이 아니면 충돌)
                         }
+                        // 좌표가 범위 안에 있는지 확인
+                        if (newX < 0 || newX >= Constants.gameWidth || newY < 0 || newY >= Constants.gameHeight)
+                        {
+                            return false; // 범위를 벗어나면 충돌로 처리
+                        }
                     }
+                    
                 }
             }
             return false; // 충돌 없음
         }
 
+
+
+
+
         static bool crush_on = true;
         static bool new_block_on = false;
 
+        static void reset_main_cpy()
+        { //main_cpy를 초기화 
+            int i, j;
+
+            for (i = 0; i < Constants.gameHeight; i++)
+            {         //게임판에 게임에 사용되지 않는 숫자를 넣음 
+                for (j = 0; j < Constants.gameWidth; j++)
+                {  //이는 main_org와 같은 숫자가 없게 하기 위함 
+                    main_cpy[i,j] = 100;
+                }
+            }
+        }
 
         // 게임판 만들기
         static void Reset_Game()
@@ -281,11 +87,11 @@ namespace Program
                 }
             }
 
-            //// 천장 만들기 (세로 i 고정)
-            //for (j = 0; j < Constants.gameWidth; j++)
-            //{
-            //    main_org[3, j] = Constants.SPACE;
-            //}
+            // 천장 만들기 (세로 i 고정)
+            for (j = 0; j < Constants.gameWidth; j++)
+            {
+                main_org[3, j] = Constants.SPACE;
+            }
             // 양쪽 벽 만들기 (가로 j 고정)
             for (i = 0; i < Constants.gameHeight - 1; i++)
             {
@@ -305,13 +111,13 @@ namespace Program
         {
             int i, j;
 
-            //for (j = 1; j < Constants.gameWidth; j++)
-            //{
-            //    if (main_org[3, j] == Constants.EMPTY)
-            //    {
-            //        main_org[3, j] = Constants.SPACE;
-            //    }
-            //}
+            for (j = 1; j < Constants.gameWidth; j++)
+            {
+                if (main_org[3, j] == Constants.EMPTY)
+                {
+                    main_org[3, j] = Constants.SPACE;
+                }
+            }
 
             for (i = 0; i < Constants.gameHeight; i++)
             {
@@ -326,10 +132,10 @@ namespace Program
                                 Console.Write("  ");
                                 break;
                             case Constants.SPACE: //천장모양 
-                                Console.Write(". ");
+                                Console.Write("- ");
                                 break;
                             case Constants.WALL: //벽모양 
-                                Console.Write("▩");
+                                Console.Write("▣");
                                 break;
                             case Constants.InActive_blocks: //굳은 블럭 모양  
                                 Console.Write("□");
@@ -358,7 +164,7 @@ namespace Program
             int i, j;
 
             // 블럭 생성 위치(x, y)
-            bx = (Constants.gameWidth / 2) - 1;
+            bx = (Constants.gameWidth / 2) - 3;
             by = 0;
 
             b_type = b_type_next;
@@ -373,18 +179,19 @@ namespace Program
             {
                 for (j = 0; j < 4; j++)
                 {
-                    if (blocks[b_type, b_rotation, i, j] == 1)
+                    if (Block.blocks[b_type, b_rotation, i, j] == 1)
                     {
                         main_org[by + i, bx + j * 2] = Constants.Active_blocks;
                     }
                 }
             }
+            
             // 다음 나올 블럭
             for (i = 0; i < 4; i++)
             {
                 for (j = 0; j < 4; j++)
                 {
-                    if (blocks[b_type_next, 0, i, j] == 1)
+                    if (Block.blocks[b_type_next, 0, i, j] == 1)
                     {
                         Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 4 + j * 2, i + 4);
                         Console.Write("■");
@@ -412,7 +219,7 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1)
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
                             {
                                 main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
@@ -426,7 +233,7 @@ namespace Program
                     { //왼쪽으로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type,b_rotation,i,j] == 1) main_org[by + i,bx + j * 2]
+                            if (Block.blocks[b_type,b_rotation,i,j] == 1) main_org[by + i,bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -437,7 +244,7 @@ namespace Program
                     { 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1)
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
                             {
                                 main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
@@ -450,7 +257,7 @@ namespace Program
                     { //오른쪽으로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -461,7 +268,7 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2] =
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                         }
                     }
@@ -471,7 +278,7 @@ namespace Program
                     { //아래로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -482,7 +289,7 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2] =
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                         }
                     }
@@ -493,8 +300,13 @@ namespace Program
                     {
                         for (j = 0; j < 4; j++)
                         {
-                            if (blocks[b_type, b_rotation, i, j] == 1) main_org[by + i, bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
+                            {
+                                
+                                main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
+
+                            }
                         }
                     }
 
@@ -537,20 +349,80 @@ namespace Program
                     // Z키는 블럭을 회전
                     case ConsoleKey.Z:
 
-                        if (check_crush(bx, by + 1, b_rotation) == false)
+                        // 회전 할 수 있는 범위
+                        if (0 < bx && bx < Constants.gameWidth)
                         {
-                            Move_Block(3);
+                            if(check_crush(bx, by + 1, (b_rotation + 1) % 4) == false)
+                            {
+                                Move_Block(3);
+                            }
                         }
-                        else
+                        break;
+
+                    case ConsoleKey.Spacebar:
+                        while(crush_on == false)
                         {
-                            return;
+                            drop_block();
                         }
+
                         break;
 
                 }
             
             }
         }
+
+        // 라인 체크
+        static void Check_Line()
+        {
+            int i, j;
+
+            int block_amount; // 한줄 블럭 저장
+            int combo = 0;
+
+            for (i = Constants.gameHeight - 2; i > 0; i--)
+            {
+                block_amount = 0;
+                for (j = 2; j < Constants.gameWidth - 2; j++)
+                {
+                    if (main_org[i, j] > 0)
+                    {
+                        block_amount++;
+                        
+                    }
+                }
+                if (block_amount > 8)
+                {
+                    
+                    combo++;
+                    // 해당 줄 삭제
+                    for (j = 1; j < Constants.gameWidth - 1; j++)
+                    {
+                        main_org[i, j] = Constants.EMPTY;
+                    }
+                    // 윗줄을 아래로 이동
+                    for (int k = i; k > 1; k--)
+                    {
+                        for (int m = 1; m < Constants.gameWidth - 1; m++)
+                        {
+                            // 한칸 내리기
+                            if (main_org[k - 1,m] != Constants.SPACE) main_org[k,m] = main_org[k - 1,m];
+                            // 비우기
+                            if (main_org[k - 1, m] == Constants.SPACE) main_org[k,m] = Constants.EMPTY;
+
+                        }
+                    }
+                    i++;
+
+                    // 현재 줄 재검사 (아래로 밀린 경우)
+                }
+                
+                
+            }
+            reset_main_cpy();
+            
+        }
+
 
         static void drop_block()
         {
@@ -575,7 +447,7 @@ namespace Program
                     }
                 }
                 crush_on = false; //flag를 끔 
-                //check_line(); //라인체크를 함 
+                Check_Line(); //라인체크를 함 
                 new_block_on = true; //새로운 블럭생성 flag를 켬    
                 return; //함수 종료 
             }
@@ -588,11 +460,29 @@ namespace Program
             }
         }
 
+        static bool GameOver()
+        {
+
+            for(int i = 1;i < Constants.gameWidth - 2;i++)
+            {
+                // 첫장 윗부분
+                if (main_org[3,i] > 0 && main_org[3,i] == Constants.InActive_blocks)
+                {
+                    Console.WriteLine("Game Over");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+
 
         [SupportedOSPlatform("windows")]
         
         static void Main(string[] args)
         {
+            
 
             Console.Clear();
             Console.Title = "TETRIS";
@@ -607,7 +497,7 @@ namespace Program
 
             // System.Threading.Thread.Sleep(500); // 속도 조절
         
-            while (true)
+            while (GameOver() == false)
             {
                 Draw_Game();
                 // 키 입력 처리
@@ -617,10 +507,12 @@ namespace Program
                 if(new_block_on == true)
                 {
                     New_Block();
+                   
+                    GameOver();
                 }
                 // 게임판 그리기
 
-                System.Threading.Thread.Sleep(300); // 속도 조절
+                System.Threading.Thread.Sleep(200); // 속도 조절
 
             }
         }
