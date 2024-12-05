@@ -10,7 +10,7 @@ namespace Program
     internal class Constants
     {
             // 스크린 사이즈
-            public const int screenWidth = 30;
+            public const int screenWidth = 60;
             public const int screenHeight = 26;
 
             // 게임화면 사이즈
@@ -21,12 +21,13 @@ namespace Program
             public const int gamePosX = 2 * 2;
             public const int gamePosY = 1;
 
-            // 상태
+            // 배열 상태
             public const int Active_blocks = -2;
             public const int SPACE = -1;
             public const int EMPTY = 0;
             public const int WALL = 1;
             public const int InActive_blocks = 2;
 
+            
     }
 }
