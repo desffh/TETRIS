@@ -10,22 +10,12 @@ using System.Xml.Serialization;
 
 namespace Program
 {
-    
+
     internal class Program
     {
         static public int[,] main_org = new int[Constants.gameHeight, Constants.gameWidth * 2];
         static public int[,] main_cpy = new int[Constants.gameHeight, Constants.gameWidth * 2];
-
-  
-
-        static void Color()
-        {
-            Random random = new Random();
-            random.Next(0, 3);
-
-            return;
-        }
-
+       
 
         static public int bx;
         static public int by;
@@ -37,6 +27,7 @@ namespace Program
         static public bool crush_on = true;
         static public bool new_block_on = false;
         
+        // 벽이나 블록에 충돌하는지
         static public bool check_crush(int bx, int by, int rotation)
         {
             
@@ -68,111 +59,6 @@ namespace Program
         }
 
 
-        static public void reset_main_cpy()
-        { //main_cpy를 초기화 
-            int i, j;
-
-            for (i = 0; i < Constants.gameHeight; i++)
-            {         //게임판에 게임에 사용되지 않는 숫자를 넣음 
-                for (j = 0; j < Constants.gameWidth; j++)
-                {  //이는 main_org와 같은 숫자가 없게 하기 위함 
-                    main_cpy[i,j] = 100;
-                }
-            }
-        }
-
-        // 게임판 만들기
-        static void Reset_Game()
-        {
-            int i, j; // 세로, 가로
-
-            for (i = 0; i < Constants.gameHeight; i++)
-            {
-                for (j = 0; j < Constants.gameWidth; j++)
-                {
-                    main_org[i, j] = 0;
-                    main_cpy[i, j] = 100;
-                }
-            }
-
-            // 천장 만들기 (세로 i 고정)
-            for (j = 0; j < Constants.gameWidth; j++)
-            {
-                main_org[3, j] = Constants.SPACE;
-            }
-            // 양쪽 벽 만들기 (가로 j 고정)
-            for (i = 0; i < Constants.gameHeight - 1; i++)
-            {
-                main_org[i, 0] = Constants.WALL;
-                main_org[i, Constants.gameWidth - 2] = Constants.WALL;
-            }
-            // 바닥 만들기 (세로 i 고정)
-            for (j = 0; j < Constants.gameWidth - 1; j++)
-            {
-                main_org[Constants.gameHeight - 1, j] = Constants.WALL;
-            }
-
-            Console.SetCursorPosition(30, 30);
-            // 바닥 만들기 (세로 i 고정)
-            for (j = 10; j < Constants.gameWidth - 1; j++)
-            {
-                main_org[Constants.gameHeight - 1, j] = Constants.WALL;
-            }
-
-        }
-
-        // 게임판 그리기
-        static void Draw_Game()
-        {
-            int i, j;
-
-            for (j = 1; j < Constants.gameWidth; j++)
-            {
-                if (main_org[3, j] == Constants.EMPTY)
-                {
-                    main_org[3, j] = Constants.SPACE;
-                }
-            }
-
-            for (i = 0; i < Constants.gameHeight; i++)
-            {
-                for (j = 0; j < Constants.gameWidth; j++)
-                {
-                    if (main_cpy[i, j] != main_org[i, j])
-                    {
-                        Console.SetCursorPosition(Constants.gamePosX + j , Constants.gamePosY + i);
-                        switch (main_org[i, j])
-                        {
-                            case Constants.EMPTY: //빈칸모양 
-                                Console.Write("  ");
-                                break;
-                            case Constants.SPACE: //천장모양 
-                                Console.Write("- ");
-                                break;
-                            case Constants.WALL: //벽모양 
-                                Console.Write("▣");
-                                break;
-                            case Constants.InActive_blocks: //굳은 블럭 모양  
-                                Console.Write("□");
-                                break;
-                            case Constants.Active_blocks: //움직이고있는 블럭 모양
-                                Color();
-                                Console.Write("■");
-                                Console.ResetColor();
-                                break;
-                        }
-                    }
-                }
-            }
-            // 복사해서 넣기
-            for (i = 0; i < Constants.gameHeight; i++)
-            {
-                for (j = 0; j < Constants.gameWidth; j++)
-                {
-                    main_cpy[i, j] = main_org[i, j ];
-                }
-            }
-        }
         
         // 키 입력받는 함수
         static void KeyInput()
@@ -231,7 +117,8 @@ namespace Program
             
             }
         }
-
+        
+        // 게임 종료 확인
         static bool GameOver()
         {
 
@@ -255,17 +142,17 @@ namespace Program
 
             Console.Clear();
             Console.Title = "TETRIS";
-            Console.SetBufferSize(120, 52); // 창 내의 버퍼
+            Console.SetBufferSize(180, 100); // 창 내의 버퍼
                                              // (내부 컨텐츠의 크기로 문자를 나타낼 셀의 수)
             Console.SetWindowSize(Constants.screenWidth, Constants.screenHeight);   // 창 크기
             
             
-            Reset_Game();
+            CreateGame.Reset_Game();
             Block.New_Block();
             
             while (GameOver() == false)
             {
-                Draw_Game();
+                CreateGame.Draw();
                 
                 KeyInput();
             
@@ -282,8 +169,9 @@ namespace Program
             
             if(GameOver() == true) 
             {
+                Console.Clear();
                 Console.SetCursorPosition(30, 10);
-                Console.WriteLine("GameOVer");
+                Console.WriteLine("GameOver");
             }
         }
     }

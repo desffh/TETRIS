@@ -430,7 +430,7 @@ namespace Program
 
 
         // 블럭 체크
-        static public void Check_Block()
+        static private void Check_Block()
         {
             Score totalScore = new Score();
 
@@ -478,7 +478,7 @@ namespace Program
             Console.SetCursorPosition(30, 20);
 
             Console.WriteLine("Score : " + totalScore.TotalScore);
-            Program.reset_main_cpy();
+            CreateGame.reset_main_cpy();
 
         }
 
