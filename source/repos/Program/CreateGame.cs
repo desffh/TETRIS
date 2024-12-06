@@ -7,24 +7,10 @@ using System.Threading.Tasks;
 namespace Program
 {
     internal class CreateGame
-    {
-        // 배열 초기화
-        static public void reset_main_cpy()
-        { //main_cpy를 초기화 
-            int i, j;
-
-            for (i = 0; i < Constants.gameHeight; i++)
-            {         //게임판에 게임에 사용되지 않는 숫자를 넣음 
-                for (j = 0; j < Constants.gameWidth; j++)
-                {  //이는 main_org와 같은 숫자가 없게 하기 위함 
-                    Program.main_cpy[i, j] = 100;
-                }
-            }
-        }
-
+    { 
 
         // 게임판 생성
-        static public void Reset_Game()
+        public void Reset_Game()
         {
             int i, j; // 세로, 가로
 
@@ -59,7 +45,7 @@ namespace Program
         }
 
         // 게임판 그리기
-        static private void Draw_Game()
+        private void Draw_Game()
         {
             int i, j;
 
@@ -90,7 +76,9 @@ namespace Program
                                 Console.Write("▣");
                                 break;
                             case Constants.InActive_blocks: //굳은 블럭 모양  
-                                Console.Write("□");
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.Write("■");
+                                Console.ResetColor();
                                 break;
                             case Constants.Active_blocks: //움직이고있는 블럭 모양
 
@@ -114,34 +102,34 @@ namespace Program
 
 
         // 다음 블록 상자
-        static private void Draw_Map()
+        private void Draw_Map()
         {
             Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 1, 2);
-            Console.WriteLine("▦▦▦▦▦▦▦▦");
+            Console.WriteLine("▣▣▣▣▣▣▣▣");
             
             Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 1, 3);
             for (int i = 3; i < 9; i++)
             {
-                Console.WriteLine("▦");
+                Console.WriteLine("▣");
                 Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 1, i);
             }
 
             Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 1, 3);
             for (int i = 3; i < 9; i++)
             {
-                Console.WriteLine("▦");
+                Console.WriteLine("▣");
                 Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 15, i);
             }
 
             Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 1, 3 + 5);
-            Console.WriteLine("▦▦▦▦▦▦▦▦");
+            Console.WriteLine("▣▣▣▣▣▣▣▣");
 
 
 
         }
     
         
-        static public void Draw()
+        public void Draw()
         {
             Draw_Game();
             Draw_Map();

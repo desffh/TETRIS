@@ -233,7 +233,7 @@ namespace Program
 
 
         // 새 블럭 생성
-        static public void New_Block()
+        public void New_Block()
         {
             Random rand = new Random();
             int i, j;
@@ -284,7 +284,7 @@ namespace Program
 
 
         // 블럭 이동
-        static public void Move_Block(int dir)
+        static private void Move_Block(int dir)
         {
             int i, j; // 세로 가로
 
@@ -397,12 +397,12 @@ namespace Program
             int i, j;
 
             // 아무것도 없을 때
-            if (Program.crush_on && Program.check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+            if (Program.crush_on && check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
             {
                 Program.crush_on = false; //밑이 비어있으면 crush flag 끔 
             }
             // 블럭이 있을 때
-            if (Program.crush_on && Program.check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
+            if (Program.crush_on && check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
             {   //밑이 비어있지않고 crush flag가 켜저있으면 
                 for (i = 0; i < Constants.gameHeight; i++)
                 { //현재 조작중인 블럭을 굳힘 
@@ -419,12 +419,30 @@ namespace Program
                 Program.new_block_on = true; //새로운 블럭생성 flag를 켬    
                 return; //함수 종료 
             }
-            if (Program.check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false) Block.Move_Block(2); //밑이 비어있으면 밑으로 한칸 이동 
+            if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+            {
+                Block.Move_Block(2); //밑이 비어있으면 밑으로 한칸 이동
+            }
 
-            if (Program.check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
+            if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
             {
                 Program.crush_on = true; //밑으로 이동이 안되면  crush flag를 켬
                 return;
+            }
+        }
+
+
+        // 배열 초기화
+        static private void reset_main_cpy()
+        { //main_cpy를 초기화 
+            int i, j;
+
+            for (i = 0; i < Constants.gameHeight; i++)
+            {         //게임판에 게임에 사용되지 않는 숫자를 넣음 
+                for (j = 0; j < Constants.gameWidth; j++)
+                {  //이는 main_org와 같은 숫자가 없게 하기 위함 
+                    Program.main_cpy[i, j] = 100;
+                }
             }
         }
 
@@ -452,11 +470,11 @@ namespace Program
                 }
                 if (block_amount > 8)
                 {
-
                     // 해당 줄 삭제
                     for (j = 1; j < Constants.gameWidth - 1; j++)
                     {
                         Program.main_org[i, j] = Constants.EMPTY;
+
                     }
                     totalScore.TotalScore += 500;
                     // 윗줄을 아래로 이동
@@ -478,9 +496,101 @@ namespace Program
             Console.SetCursorPosition(30, 20);
 
             Console.WriteLine("Score : " + totalScore.TotalScore);
-            CreateGame.reset_main_cpy();
+            reset_main_cpy();
 
         }
+
+
+        // 벽이나 블록에 충돌하는지
+        static private bool check_crush(int bx, int by, int rotation)
+        {
+
+            // 충돌 여부 계산 (예: 벽이나 블록과 겹치는지 확인)
+            for (int i = 0; i < 4; i++)
+            {
+
+                for (int j = 0; j < 4; j++)
+                {
+                    if (Block.blocks[Program.b_type, rotation, i, j] == 1 && Program.main_org[by + i, bx + j * 2] >= 0)
+                    {
+                        int newX = bx + j * 2;
+                        int newY = by + i;
+
+                        if (Program.main_org[newY, newX] != Constants.EMPTY)
+                        {
+                            return true; // 충돌 발생 (새로운 위치가 빈곳이 아니면 충돌)
+                        }
+                        // 좌표가 범위 안에 있는지 확인
+                        if (newX < 0 || newX >= Constants.gameWidth || newY < 0 || newY >= Constants.gameHeight)
+                        {
+                            return false; // 범위를 벗어나면 충돌로 처리
+                        }
+                    }
+
+                }
+            }
+            return false; // 충돌 없음
+        }
+
+
+        // 키 입력받는 함수
+        static public void KeyInput()
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo key;
+                key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.LeftArrow:
+                        // 충돌이 없으면 이동
+                        if (check_crush(Program.bx - 2, Program.by, Program.b_rotation) == false)
+                        {
+                            Move_Block(0);
+                        }
+                        break;
+
+                    case ConsoleKey.RightArrow:
+                        if (check_crush(Program.bx + 2, Program.by, Program.b_rotation) == false)
+                        {
+                            Move_Block(1);
+                        }//PosX += 2;
+                        break;
+
+                    case ConsoleKey.DownArrow:
+                        if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+                        {
+                            Move_Block(2);
+                        }//PosY += 1;
+                        break;
+
+                    // Z키는 블럭을 회전
+                    case ConsoleKey.Z:
+
+                        // 회전 할 수 있는 범위
+                        if (0 < Program.bx && Program.bx < Constants.gameWidth)
+                        {
+                            if (check_crush(Program.bx, Program.by + 1, (Program.b_rotation + 1) % 4) == false)
+                            {
+                               Move_Block(3);
+                            }
+                        }
+                        break;
+
+                    case ConsoleKey.Spacebar:
+                        while (Program.crush_on == false)
+                        {
+                            Drop_block();
+                        }
+
+                        break;
+
+                }
+
+            }
+        }
+
 
     }
 }
