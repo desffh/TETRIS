@@ -8,6 +8,37 @@ namespace Program
 {
     internal class CreateGame
     { 
+        public void Title()
+        {
+            int i, j;
+            
+            Console.SetCursorPosition(10, 5);
+            for(i = 0; i < 20; i++) 
+            {
+                Console.Write("◈");
+            }
+            
+            for(j = 5;  j < 10; j++)
+            {
+                Console.SetCursorPosition(10, j);
+                Console.Write("◈");
+
+                Console.SetCursorPosition(50, j);
+                Console.Write("◈");
+            }
+
+            Console.SetCursorPosition(10, 10);
+            for (i = 0; i < 21; i++)
+            {
+                Console.Write("◈");
+            }
+
+            Console.SetCursorPosition(20, 12);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Press to Start TETRIS");
+            Console.ResetColor();
+        }
+
 
         // 게임판 생성
         public void Reset_Game()

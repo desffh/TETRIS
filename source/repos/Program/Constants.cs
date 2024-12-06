@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Program
 {
-    // 정의
+    // 상수 정의
     internal class Constants
     {
             // 스크린 사이즈

@@ -9,6 +9,17 @@ namespace Program
 {
     internal class Block
     {
+        static private int bx;
+        static private int by;
+
+        static private int b_type; //블록 종류를 저장 
+        static private int b_rotation; //블록 회전값 저장 
+        static private int b_type_next; //다음 블록값 저장 
+        static private int b_rotation_next; //다음 블록회전값 저장 
+
+        static private bool crush_on = true;
+        static public bool new_block_on = false;
+
         // 4차원 배열 (테트리스 블럭)
         static public int[,,,] blocks = new int[7, 4, 4, 4]
                     {
@@ -239,25 +250,28 @@ namespace Program
             int i, j;
 
             // 블럭 생성 위치(x, y)
-            Program.bx = (Constants.gameWidth / 2) - 3;
-            Program.by = 0;
+            bx = (Constants.gameWidth / 2) - 3;
+            by = 0;
 
-            Program.b_type = Program.b_type_next;
-            Program.b_type_next = rand.Next(0, 7);
-            Program.b_rotation = 0;
+            // 다음 블록 종류 & 회전값
+            b_type = b_type_next;
+            b_type_next = rand.Next(0, 7);
+            b_rotation = b_rotation_next;
+            b_rotation_next = rand.Next(0, 4);
+
             // 난수 생성
             // rand.Next(min이상, max미만)
 
-            Program.new_block_on = false;
+            new_block_on = false;
 
             for (i = 0; i < 4; i++)
             {
                 for (j = 0; j < 4; j++)
                 {
-                    if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1)
+                    if (Block.blocks[b_type, b_rotation, i, j] == 1)
                     {
 
-                        Program.main_org[Program.by + i, Program.bx + j * 2] = Constants.Active_blocks;
+                        Program.main_org[by + i, bx + j * 2] = Constants.Active_blocks;
 
                     }
                 }
@@ -268,7 +282,7 @@ namespace Program
             {
                 for (j = 0; j < 4; j++)
                 {
-                    if (Block.blocks[Program.b_type_next, 0, i, j] == 1)
+                    if (Block.blocks[b_type_next, b_rotation_next, i, j] == 1)
                     {
                         Console.SetCursorPosition(Constants.gamePosX + Constants.gameWidth + 4 + j * 2, i + 4);
                         Console.Write("■");
@@ -295,21 +309,21 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1)
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
                             {
-                                Program.main_org[Program.by + i, Program.bx + j * 2] =
+                                Program.main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                             }
 
                         }
                     }
-                    Program.bx -= 2; //좌표값 이동 
+                    bx -= 2; //좌표값 이동 
 
                     for (i = 0; i < 4; i++)
                     { //왼쪽으로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1) Program.main_org[Program.by + i, Program.bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) Program.main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -320,20 +334,20 @@ namespace Program
                     {
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1)
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
                             {
-                                Program.main_org[Program.by + i, Program.bx + j * 2] =
+                                Program.main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                             }
                         }
                     }
-                    Program.bx += 2; //좌표값 이동
+                    bx += 2; //좌표값 이동
 
                     for (i = 0; i < 4; i++)
                     { //오른쪽으로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1) Program.main_org[Program.by + i, Program.bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) Program.main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -344,17 +358,17 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1) Program.main_org[Program.by + i, Program.bx + j * 2] =
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) Program.main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                         }
                     }
-                    Program.by += 1; //좌표값 이동
+                    by += 1; //좌표값 이동
 
                     for (i = 0; i < 4; i++)
                     { //아래로 한칸가서 active block을 찍음 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1) Program.main_org[Program.by + i, Program.bx + j * 2]
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) Program.main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
                         }
                     }
@@ -365,21 +379,21 @@ namespace Program
                     { //현재좌표의 블럭을 지움 
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1) Program.main_org[Program.by + i, Program.bx + j * 2] =
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1) Program.main_org[by + i, bx + j * 2] =
                                     Constants.EMPTY;
                         }
                     }
 
-                    Program.b_rotation = (Program.b_rotation + 1) % 4; // 회전 1 2 3 4
+                    b_rotation = (b_rotation + 1) % 4; // 회전 1 2 3 4
 
                     for (i = 0; i < 4; i++)
                     {
                         for (j = 0; j < 4; j++)
                         {
-                            if (Block.blocks[Program.b_type, Program.b_rotation, i, j] == 1)
+                            if (Block.blocks[b_type, b_rotation, i, j] == 1)
                             {
 
-                                Program.main_org[Program.by + i, Program.bx + j * 2]
+                                Program.main_org[by + i, bx + j * 2]
                                     = Constants.Active_blocks;
 
                             }
@@ -397,12 +411,12 @@ namespace Program
             int i, j;
 
             // 아무것도 없을 때
-            if (Program.crush_on && check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+            if (crush_on && check_crush(bx, by + 1, b_rotation) == false)
             {
-                Program.crush_on = false; //밑이 비어있으면 crush flag 끔 
+                crush_on = false; //밑이 비어있으면 crush flag 끔 
             }
             // 블럭이 있을 때
-            if (Program.crush_on && check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
+            if (crush_on && check_crush(bx, by + 1, b_rotation) == true)
             {   //밑이 비어있지않고 crush flag가 켜저있으면 
                 for (i = 0; i < Constants.gameHeight; i++)
                 { //현재 조작중인 블럭을 굳힘 
@@ -414,19 +428,19 @@ namespace Program
                         }
                     }
                 }
-                Program.crush_on = false; //flag를 끔 
+                crush_on = false; //flag를 끔 
                 Check_Block(); // 블럭이 한줄이 되었는지 
-                Program.new_block_on = true; //새로운 블럭생성 flag를 켬    
+                new_block_on = true; //새로운 블럭생성 flag를 켬    
                 return; //함수 종료 
             }
-            if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+            if (check_crush(bx, by + 1, b_rotation) == false)
             {
                 Block.Move_Block(2); //밑이 비어있으면 밑으로 한칸 이동
             }
 
-            if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == true)
+            if (check_crush(bx, by + 1, b_rotation) == true)
             {
-                Program.crush_on = true; //밑으로 이동이 안되면  crush flag를 켬
+                crush_on = true; //밑으로 이동이 안되면  crush flag를 켬
                 return;
             }
         }
@@ -511,7 +525,7 @@ namespace Program
 
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Block.blocks[Program.b_type, rotation, i, j] == 1 && Program.main_org[by + i, bx + j * 2] >= 0)
+                    if (Block.blocks[b_type, rotation, i, j] == 1 && Program.main_org[by + i, bx + j * 2] >= 0)
                     {
                         int newX = bx + j * 2;
                         int newY = by + i;
@@ -545,21 +559,21 @@ namespace Program
                 {
                     case ConsoleKey.LeftArrow:
                         // 충돌이 없으면 이동
-                        if (check_crush(Program.bx - 2, Program.by, Program.b_rotation) == false)
+                        if (check_crush(bx - 2, by, b_rotation) == false)
                         {
                             Move_Block(0);
                         }
                         break;
 
                     case ConsoleKey.RightArrow:
-                        if (check_crush(Program.bx + 2, Program.by, Program.b_rotation) == false)
+                        if (check_crush(bx + 2, by, b_rotation) == false)
                         {
                             Move_Block(1);
                         }//PosX += 2;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        if (check_crush(Program.bx, Program.by + 1, Program.b_rotation) == false)
+                        if (check_crush(bx, by + 1, b_rotation) == false)
                         {
                             Move_Block(2);
                         }//PosY += 1;
@@ -569,9 +583,9 @@ namespace Program
                     case ConsoleKey.Z:
 
                         // 회전 할 수 있는 범위
-                        if (0 < Program.bx && Program.bx < Constants.gameWidth)
+                        if (0 < bx && bx < Constants.gameWidth)
                         {
-                            if (check_crush(Program.bx, Program.by + 1, (Program.b_rotation + 1) % 4) == false)
+                            if (check_crush(bx, by + 1, (b_rotation + 1) % 4) == false)
                             {
                                Move_Block(3);
                             }
@@ -579,7 +593,7 @@ namespace Program
                         break;
 
                     case ConsoleKey.Spacebar:
-                        while (Program.crush_on == false)
+                        while (crush_on == false)
                         {
                             Drop_block();
                         }

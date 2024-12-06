@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Reflection.Metadata;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Versioning;
+using System.Transactions;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -15,18 +16,7 @@ namespace Program
     {
         static public int[,] main_org = new int[Constants.gameHeight, Constants.gameWidth * 2];
         static public int[,] main_cpy = new int[Constants.gameHeight, Constants.gameWidth * 2];
-       
 
-        static public int bx;
-        static public int by;
-
-        static public int b_type; //블록 종류를 저장 
-        static public int b_rotation; //블록 회전값 저장 
-        static public int b_type_next; //다음 블록값 저장 
-
-        static public bool crush_on = true;
-        static public bool new_block_on = false;
-        
         
         // 게임 종료 확인
         static bool GameOver()
@@ -56,7 +46,7 @@ namespace Program
         
         static void Main(string[] args)
         {
-
+            Console.CursorVisible = false;
             Setting();
             
             // 참조
@@ -68,7 +58,9 @@ namespace Program
             
             CreateGame draw = new CreateGame();
 
+            CreateGame title = new CreateGame();
 
+            // title.Title();
             createGame.Reset_Game();
             
             while (GameOver() == false)
@@ -82,7 +74,7 @@ namespace Program
 
 
                 // 새 블럭이 필요하면 생성
-                if (new_block_on == true)
+                if (Block.new_block_on == true)
                 {
                    newblock.New_Block();
                 }
@@ -94,6 +86,8 @@ namespace Program
                 Console.SetCursorPosition(30, 10);
                 Console.WriteLine("GameOver");
             }
+            
+            
         }
     }
 }
