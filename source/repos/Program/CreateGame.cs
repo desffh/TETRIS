@@ -8,7 +8,7 @@ namespace Program
 {
     internal class CreateGame
     { 
-        public void Title()
+        static public void Title()
         {
             int i, j;
             
@@ -36,6 +36,41 @@ namespace Program
             Console.SetCursorPosition(20, 12);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Press to Start TETRIS");
+            Console.ResetColor();
+        }
+
+        static public void GameOver()
+        {
+            int i, j;
+
+            Console.SetCursorPosition(10, 5);
+            for (i = 0; i < 20; i++)
+            {
+                Console.Write("◈");
+            }
+
+            for (j = 5; j < 10; j++)
+            {
+                Console.SetCursorPosition(10, j);
+                Console.Write("◈");
+
+                Console.SetCursorPosition(50, j);
+                Console.Write("◈");
+            }
+
+            Console.SetCursorPosition(10, 10);
+            for (i = 0; i < 21; i++)
+            {
+                Console.Write("◈");
+            }
+
+            Console.SetCursorPosition(25, 12);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Game Over");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.SetCursorPosition(23, 14);
+            Console.WriteLine("Enter to Retry");
             Console.ResetColor();
         }
 
