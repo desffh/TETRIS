@@ -35,7 +35,7 @@ namespace Program
 
             Console.SetCursorPosition(20, 12);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Press to Start TETRIS");
+            Console.WriteLine("Press to Enter TETRIS");
             Console.ResetColor();
         }
 
@@ -70,7 +70,7 @@ namespace Program
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(23, 14);
-            Console.WriteLine("Enter to Retry");
+            Console.WriteLine("'R' Enter to Retry");
             Console.ResetColor();
         }
 
